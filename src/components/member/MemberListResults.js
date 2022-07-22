@@ -43,6 +43,12 @@ const MemberListResults = ({ members, eventData, ...rest }) => {
   const [searchInfo, setSearchInfo] = useState('');
   const [membersInfo, setMembersInfo] = useState([]);
   const advancedAdmin = coreTeamList.includes(localStorage.getItem('email'));
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('authToken')}`
+    }
+  };
   const [notify, setNotify] = useState({
     isOpen: false,
     message: '',
@@ -57,13 +63,6 @@ const MemberListResults = ({ members, eventData, ...rest }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const changeMembershipStatus = async (id) => {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('authToken')}`
-      }
-    };
-
     try {
       console.log(id);
       await axios.post(
@@ -205,9 +204,6 @@ const MemberListResults = ({ members, eventData, ...rest }) => {
         list.push(eventData[e].eventName);
       }
     });
-    if (list.length == 0) {
-      list.push('Nothing to see here');
-    }
     setUserEventList(list);
     setOpen(true);
   };
@@ -248,13 +244,6 @@ const MemberListResults = ({ members, eventData, ...rest }) => {
 
   const handleDelete = async () => {
     setLoading(true);
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('authToken')}`
-      }
-    };
-
     try {
       console.log(selectedMemberIds[0]);
       await axios.delete(
@@ -460,11 +449,7 @@ const MemberListResults = ({ members, eventData, ...rest }) => {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>
           <div>
-            {userDetails.firstname.charAt(0).toUpperCase() +
-              userDetails.firstname.slice(1) +
-              ' is interested in ' +
-              userEvents.length +
-              ' event(s)'}
+            {userEvents.length > 0 ? userDetails.firstname.charAt(0).toUpperCase() + userDetails.firstname.slice(1) + ' is interested in ' + userEvents.length + ' event(s)' : 'Nothing to see here'}
           </div>
         </DialogTitle>
         <DialogContent dividers>
